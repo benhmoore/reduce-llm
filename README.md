@@ -2,7 +2,7 @@
 
 ## Contributing
 
-1. Clone the repository with gh cli:
+1. Clone the repository with gh cli (https://cli.github.com):
    `gh repo clone benhmoore/reduce-llm`
 2. Create a new branch for your addition:
    `git checkout -b [branch-name]`
