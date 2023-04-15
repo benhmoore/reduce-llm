@@ -48,7 +48,7 @@ def should_remove_line(line):
         return True
 
     # Remove code samples
-    if re.match(r'^\s+', line) or re.search(r'[{}[\]()<>]', line):
+    if re.match(r'^\s+', line) or re.search(r'[{}[\]<>]', line):
         return True
 
     # Remove short or empty lines
@@ -93,6 +93,15 @@ def cutter_process_directory(input_dir, output_dir):
 
 
 if __name__ == "__main__":
-    input_directory = "../wikipedia-dump/export"
-    output_directory = "cutter_export"
-    cutter_process_directory(input_directory, output_directory)
+    # Get input file path from command line arguments
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Process a text file and remove links, title capitalized lines, punctuation, non-standard characters, accented characters, quotation lines and short or empty lines.")
+    parser.add_argument(
+        "input_file", help="Path to the input file.")
+    parser.add_argument(
+        "output_file", help="Path to the output file.",
+        default="output.txt")
+
+    args = parser.parse_args()
+    process_text_file(args.input_file, args.output_file)
