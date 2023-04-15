@@ -30,21 +30,23 @@ def split_large_file(file_path, lines_per_file, output_dir):
 
 
 # Main script
-parser = argparse.ArgumentParser(
-    description='Split a large text file into smaller files')
-parser.add_argument('file_path', type=str, help='Path to the large text file')
-parser.add_argument('lines_per_file', type=int, default=1000000,
-                    help='Number of lines per output file')
-parser.add_argument('-o', '--output_dir', type=str, default='export',
-                    help='Output directory for the smaller files (default: export)')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Split a large text file into smaller files')
+    parser.add_argument('file_path', type=str,
+                        help='Path to the large text file')
+    parser.add_argument('lines_per_file', type=int, default=1000000,
+                        help='Number of lines per output file')
+    parser.add_argument('-o', '--output_dir', type=str, default='export',
+                        help='Output directory for the smaller files (default: export)')
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-if not os.path.exists(args.output_dir):
-    os.makedirs(args.output_dir)
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
 
-# Print the arguments and start message
-print('Arguments:', args)
-print('Starting...')
+    # Print the arguments and start message
+    print('Arguments:', args)
+    print('Starting...')
 
-split_large_file(args.file_path, args.lines_per_file, args.output_dir)
+    split_large_file(args.file_path, args.lines_per_file, args.output_dir)
