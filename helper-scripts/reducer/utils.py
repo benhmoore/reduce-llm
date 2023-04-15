@@ -28,7 +28,7 @@ def extract_keyword_positions(text, keywords):
         elif isinstance(keyword, dict) and "sequence" in keyword:
             sequence, max_distance = keyword["sequence"], keyword["max_distance"]
             pattern = r"\b(?:{})\b".format("|".join(re.escape(kw)
-                                                    for kw in sequence))
+                                                    for kw in sequence))  # Matches any of the keywords in the sequence
             matches = list(re.finditer(pattern, text))
             for i in range(len(matches) - len(sequence) + 1):
                 seq_matches = matches[i:i + len(sequence)]
@@ -77,6 +77,7 @@ def extract_chunks(text, positions, clusters):
         list: A list of chunks.
     """
     chunks = []
+    # +1 because max(clusters) returns the highest cluster label
     for cluster in range(max(clusters) + 1):
         cluster_positions = [pos for i, pos in enumerate(
             positions) if clusters[i] == cluster]
@@ -138,14 +139,14 @@ def chunk_text(text, keywords, max_distance):
 
 
 # Example usage
-text = "This is a sample text with some keywords and ordered sequences. The proximity of keywords is important for chunks."
-keywords = ["This", "text", "sample",  {"sequence": [
-    "ordered", "sequences"], "max_distance": 100}]
-max_distance = 500
+# text = "This is a sample text with some keywords and ordered sequences. The proximity of keywords is important for chunks."
+# keywords = ["This", "text", "sample",  {"sequence": [
+#     "ordered", "sequences"], "max_distance": 100}]
+# max_distance = 500
 
-result = chunk_text(text, keywords, max_distance)
-print(result)
+# result = chunk_text(text, keywords, max_distance)
+# print(result)
 
-print(cluster_positions([(0, 'I'), (7, 'apples'), (18, 'oranges')], 50))
-print(extract_chunks("I like apples and oranges", [
-      (0, 'I'), (7, 'apples'), (18, 'oranges')], [0, 0, 0]))
+# print(cluster_positions([(0, 'I'), (7, 'apples'), (18, 'oranges')], 50))
+# print(extract_chunks("I like apples and oranges", [
+#       (0, 'I'), (7, 'apples'), (18, 'oranges')], [0, 0, 0]))
