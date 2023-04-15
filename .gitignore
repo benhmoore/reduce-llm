@@ -2,4 +2,3 @@
 *.pyc
 /__pycache__
 /cutter_output
-*.txt
