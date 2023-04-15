@@ -76,15 +76,36 @@ def extract_chunks(text, positions, clusters):
     Returns:
         list: A list of chunks.
     """
+
     chunks = []
-    # +1 because max(clusters) returns the highest cluster label
+
+    # Function to find the start position of the nearest sentence
+    def find_sentence_start(pos):
+        start = pos
+        while start > 0:
+            start -= 1
+            if text[start] in ".!?" and (start == 0 or text[start-1].isspace()):
+                break
+        return start
+
+    # Function to find the end position of the nearest sentence
+    def find_sentence_end(pos):
+        end = pos
+        while end < len(text) - 1:
+            end += 1
+            if text[end] in ".!?" and (end == len(text) - 1 or text[end+1].isspace()):
+                break
+        return end
+
     for cluster in range(max(clusters) + 1):
         cluster_positions = [pos for i, pos in enumerate(
             positions) if clusters[i] == cluster]
         if cluster_positions:
-            start = cluster_positions[0][0]
-            end = cluster_positions[-1][0] + len(cluster_positions[-1][1])
+            start = find_sentence_start(cluster_positions[0][0])
+            end = find_sentence_end(
+                cluster_positions[-1][0] + len(cluster_positions[-1][1]))
             chunks.append(text[start:end])
+
     return chunks
 
 
@@ -136,17 +157,3 @@ def chunk_text(text, keywords, max_distance):
     sorted_chunks = sorted(chunks, key=lambda chunk: count_keywords(
         chunk, keywords), reverse=True)
     return sorted_chunks
-
-
-# Example usage
-# text = "This is a sample text with some keywords and ordered sequences. The proximity of keywords is important for chunks."
-# keywords = ["This", "text", "sample",  {"sequence": [
-#     "ordered", "sequences"], "max_distance": 100}]
-# max_distance = 500
-
-# result = chunk_text(text, keywords, max_distance)
-# print(result)
-
-# print(cluster_positions([(0, 'I'), (7, 'apples'), (18, 'oranges')], 50))
-# print(extract_chunks("I like apples and oranges", [
-#       (0, 'I'), (7, 'apples'), (18, 'oranges')], [0, 0, 0]))

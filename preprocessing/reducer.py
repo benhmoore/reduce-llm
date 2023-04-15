@@ -6,7 +6,7 @@ import json
 from utils import *
 
 
-def process_directory(input_dir, output_dir, keywords, max_word_distance, max_file_size):
+def reducer_process_directory(input_dir, output_dir, keywords, max_word_distance=1000, max_file_size=104857600, min_chunk_size=1000):
     os.makedirs(output_dir, exist_ok=True)
 
     file_list = glob.glob(os.path.join(input_dir, "*"))
@@ -27,6 +27,10 @@ def process_directory(input_dir, output_dir, keywords, max_word_distance, max_fi
             chunks = chunk_text(text, keywords, max_word_distance)
             for chunk in chunks:
                 chunk_size = len(chunk.encode("utf-8"))
+
+                if chunk_size < min_chunk_size:  # Skip chunks that are too small
+                    continue
+
                 if output_file_size + chunk_size > max_file_size:
                     output_file.close()
                     output_file_index += 1
@@ -60,8 +64,5 @@ if __name__ == "__main__":
     with open(args.keywords_file, "r") as f:
         keywords = json.load(f)
 
-    process_directory(args.input_dir, args.output_dir, keywords,
-                      args.max_word_distance, args.max_file_size)
-
-# Example Usage
-# python helper-scripts/reducer/reduce.py ../wikipedia-dump/export ../wikipedia-dump/reduced-export helper-scripts/reducer/example_keywords.json 1000 104857600
+    reducer_process_directory(args.input_dir, args.output_dir, keywords,
+                              args.max_word_distance, args.max_file_size)

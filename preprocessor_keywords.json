@@ -1,0 +1,44 @@
+[
+    {
+        "sequence": [
+            "computer",
+            "science"
+        ],
+        "max_distance": 10
+    },
+    {
+        "sequence": [
+            "computer",
+            "programming"
+        ],
+        "max_distance": 10
+    },
+    {
+        "sequence": [
+            "software",
+            "engineering"
+        ],
+        "max_distance": 10
+    },
+    {
+        "sequence": [
+            "programming",
+            "languages"
+        ],
+        "max_distance": 10
+    },
+    {
+        "sequence": [
+            "algorithm",
+            "complexity"
+        ],
+        "max_distance": 10
+    },
+    {
+        "sequence": [
+            "computer",
+            "code"
+        ],
+        "max_distance": 500
+    }
+]
