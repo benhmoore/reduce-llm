@@ -32,35 +32,35 @@
             "computer",
             "code"
         ],
-        "max_distance": 500
+        "max_distance": 200
     },
     {
         "sequence": [
             "software",
             "development"
         ],
-        "max_distance": 300
+        "max_distance": 200
     },
     {
         "sequence":[
             "machine",
             "learning"
         ],
-        "max_distance": 50
+        "max_distance": 10
     },
     {
         "sequence":[
             "artificial",
             "intelligence"
         ],
-        "max_distance": 50
+        "max_distance": 20
     },
     {
         "sequence":[
             "computer",
             "architecture"
         ],
-        "max_distance": 50
+        "max_distance": 30
     },
     {
         "sequence":[
@@ -75,31 +75,39 @@
             "computer",
             "graphics"
         ],
-        "max_distance": 100
-    },
-    {
-        "sequence":[
-            "ai",
-            "ml"
-        ],
-        "max_distance": 1000
+        "max_distance": 20
     },
     {
         "sequence":[
             "computer",
             "network"
         ],
-        "max_distance": 500
+        "max_distance": 10
     },
     {
         "sequence":[
             "web",
             "technology"
         ],
-        "max_distance": 200
+        "max_distance": 100
     },
+    {
+        "sequence":[
+            "application",
+            "programming",
+            "interface"
+        ],
+        "max_distance": 10
+    },
+    {
+        "sequence":[
+            "user",
+            "interface"
+        ],
+        "max_distance": 10
+    },
+    "cybersecurity",
     "html",
     "algorithm",
-    "javascript",
-    "css"
+    "javascript"
 ]

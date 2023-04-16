@@ -3,3 +3,4 @@
 /__pycache__
 /cutter_output
 /reducer_output
+*.pkl
