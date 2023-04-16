@@ -29,16 +29,77 @@
     },
     {
         "sequence": [
-            "algorithm",
-            "complexity"
-        ],
-        "max_distance": 10
-    },
-    {
-        "sequence": [
             "computer",
             "code"
         ],
         "max_distance": 500
-    }
+    },
+    {
+        "sequence": [
+            "software",
+            "development"
+        ],
+        "max_distance": 300
+    },
+    {
+        "sequence":[
+            "machine",
+            "learning"
+        ],
+        "max_distance": 50
+    },
+    {
+        "sequence":[
+            "artificial",
+            "intelligence"
+        ],
+        "max_distance": 50
+    },
+    {
+        "sequence":[
+            "computer",
+            "architecture"
+        ],
+        "max_distance": 50
+    },
+    {
+        "sequence":[
+            "natural",
+            "language",
+            "processing"
+        ],
+        "max_distance": 30
+    },
+    {
+        "sequence":[
+            "computer",
+            "graphics"
+        ],
+        "max_distance": 100
+    },
+    {
+        "sequence":[
+            "ai",
+            "ml"
+        ],
+        "max_distance": 1000
+    },
+    {
+        "sequence":[
+            "computer",
+            "network"
+        ],
+        "max_distance": 500
+    },
+    {
+        "sequence":[
+            "web",
+            "technology"
+        ],
+        "max_distance": 200
+    },
+    "html",
+    "algorithm",
+    "javascript",
+    "css"
 ]

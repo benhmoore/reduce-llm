@@ -48,7 +48,7 @@ def should_remove_line(line):
         return True
 
     # Remove code samples
-    if re.match(r'^\s+', line) or re.search(r'[{}[\]<>]', line):
+    if re.search(r'[{}<>]', line):
         return True
 
     # Remove short or empty lines
