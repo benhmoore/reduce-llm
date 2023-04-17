@@ -4,7 +4,10 @@ import torch.nn as nn
 import time
 
 
-def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epochs, criterion, optimizer, device):
+def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epochs, criterion, optimizer, device, patience=5):
+    best_val_loss = float("inf")
+    patience_counter = 0
+
     # Training loop
     for epoch in range(epochs):
         print(f"Starting epoch {epoch+1} of {epochs}")
@@ -25,15 +28,16 @@ def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epoch
             optimizer.zero_grad()
             output = model(input_sequences)
 
-            loss = criterion(
-                output.view(-1, vocab_size), target_sequences.view(-1))
+            loss = criterion(output.view(-1, vocab_size),
+                             target_sequences.view(-1))
             loss.backward()
             optimizer.step()
 
             total_loss += loss.item()
 
             # Print loss for every batch
-            print(f"Batch: {batch_count}, Loss: {loss.item():.4f}")
+            if batch_count % 50 == 0:
+                print(f"Batch: {batch_count}, Loss: {loss.item():.4f}")
 
             if batch_count % 50 == 0:
                 end_time = time.time()
@@ -55,12 +59,23 @@ def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epoch
                 target_sequences = target_sequences.to(device)
 
                 output = model(input_sequences)
-                loss = criterion(
-                    output.view(-1, vocab_size), target_sequences.view(-1))
+                loss = criterion(output.view(-1, vocab_size),
+                                 target_sequences.view(-1))
                 total_loss += loss.item()
 
-            avg_loss = total_loss / len(val_dataloader)
-            print(f"Validation Loss: {avg_loss:.4f}")
+            avg_val_loss = total_loss / len(val_dataloader)
+            print(f"Validation Loss: {avg_val_loss:.4f}")
+
+        if avg_val_loss < best_val_loss:
+            best_val_loss = avg_val_loss
+            patience_counter = 0
+        else:
+            patience_counter += 1
+
+        if patience_counter >= patience:
+            print(
+                f"Early stopping triggered after {patience} epochs of no improvement.")
+            break
 
         # Save the model after each epoch to the ../trained_models directory
         model_path = f"../trained_models/epoch_{epoch+1}.pt"
