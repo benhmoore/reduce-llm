@@ -13,6 +13,8 @@ class SimpleTransformer(nn.Module):
     def __init__(self, vocab_size, d_model, nhead, num_layers, dim_feedforward, dropout=0.1):
         super().__init__()
 
+        self.device = "mps" if torch.backends.mps.is_available() else "cpu"
+
         self.embedding = nn.Embedding(vocab_size, d_model)
         self.transformer = TransformerEncoder(
             TransformerEncoderLayer(

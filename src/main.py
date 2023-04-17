@@ -4,11 +4,11 @@ import torch.optim as optim
 import torch.nn as nn
 
 # from model import SimpleTransformer
-from reg_model import SimpleTransformer
+from gpt_model import SimpleTransformer
 
 from tokenizer import load_custom_tokenizer
 from dataset import TextDataset, prepare_data_loaders
-from train import train_transformer
+from gpt_train import train_transformer
 
 # Disable parallelism for tokenizers to avoid errors
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -50,16 +50,16 @@ def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wiki
     # Train the model
     epochs = 10
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-5)
+    optimizer = optim.AdamW(model.parameters(), lr=0.0005, weight_decay=1e-5)
     device = "mps" if torch.backends.mps.is_available() else "cpu"
 
     print("Training model.")
     model.to(device)
-    train_transformer(model, train_dataloader, val_dataloader,
+    train_transformer(model, train_dataloader, val_dataloader, vocab_size,
                       epochs, criterion, optimizer, device)
 
     print("Finished training.")
 
 
 if __name__ == "__main__":
-    main()
+    main(dataset_path="../../wikipedia-dump/preprocessed")

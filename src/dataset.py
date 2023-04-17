@@ -25,7 +25,7 @@ class TextDataset(Dataset):
         return self.input_sequences[idx], self.target_sequences[idx]
 
 
-def create_dataset(tokenizer, max_seq_len):
+def create_dataset(tokenizer, max_seq_len, file_path="../../wikipedia-dump/finalized_exports"):
     """
     Create a dataset from a directory of text files.
 
@@ -38,7 +38,7 @@ def create_dataset(tokenizer, max_seq_len):
     """
 
     # Replace with the path to your raw data directory
-    data_dir = "../../wikipedia-dump/finalized_exports"
+    data_dir = file_path
     input_sequences = []
     target_sequences = []
 
@@ -121,7 +121,7 @@ def prepare_data_loaders(directory, tokenizer, train_batch_size=32, val_batch_si
         dataset = load_dataset(dataset_file)
     else:
         print("Creating dataset...")
-        dataset = create_dataset(tokenizer, max_seq_len)
+        dataset = create_dataset(tokenizer, max_seq_len, file_path=directory)
         if save_to_disk:
             save_dataset(dataset, dataset_file)
 

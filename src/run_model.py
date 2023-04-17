@@ -1,6 +1,6 @@
 import os
 import torch
-from model import SimpleTransformer
+from reg_model import SimpleTransformer
 from tokenizer import load_custom_tokenizer
 
 # Load the model's state dict from the .pt file
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     nhead = 8
     num_layers = 3
     dim_feedforward = 1024
-    model_path = "../trained_models/epoch_1.pt"
+    model_path = "../trained_models/epoch_3.pt"
 
     device = "mps" if torch.backends.mps.is_available() else "cpu"
 
