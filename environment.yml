@@ -2,6 +2,7 @@ name: reduce-llm
 channels:
   - pytorch-nightly
   - huggingface
+  - conda-forge
   - defaults
 dependencies:
   - python=3.9
@@ -10,3 +11,4 @@ dependencies:
   - torchaudio
   - transformers
   - tokenizers
+  - scikit-optimize
