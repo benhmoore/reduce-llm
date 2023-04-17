@@ -22,15 +22,16 @@ def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wiki
 
     # Create the model
     vocab_size = tokenizer.vocab_size
-    d_model = 256
-    nhead = 8
-    num_layers = 3
-    dim_feedforward = 1024
+    d_model = 256  # d_model is the dimension of the encoder/decoder layers
+    nhead = 4  # nhead is the number of heads in the multiheadattention models
+    num_layers = 6  # num_layers is the number of encoder and decoder layers
+    # dim_feedforward is the dimension of the feedforward network model in nn.TransformerEncoder
+    dim_feedforward = 1512
     model = SimpleTransformer(
         vocab_size, d_model,
         nhead, num_layers,
         dim_feedforward,
-        dropout=0.1,
+        dropout=0.05,
         # train_x=None,
         # train_y=None
     )
@@ -50,7 +51,7 @@ def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wiki
     # Train the model
     epochs = 10
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.AdamW(model.parameters(), lr=0.0005, weight_decay=1e-5)
+    optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-5)
     device = "mps" if torch.backends.mps.is_available() else "cpu"
 
     print("Training model.")
@@ -62,4 +63,4 @@ def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wiki
 
 
 if __name__ == "__main__":
-    main(dataset_path="../../wikipedia-dump/preprocessed")
+    main()

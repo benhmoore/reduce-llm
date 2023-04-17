@@ -36,7 +36,7 @@ if __name__ == "__main__":
     nhead = 8
     num_layers = 3
     dim_feedforward = 1024
-    model_path = "../trained_models/epoch_3.pt"
+    model_path = "../trained_models/simple_epoch_1.pt"
 
     device = "mps" if torch.backends.mps.is_available() else "cpu"
 
@@ -45,6 +45,6 @@ if __name__ == "__main__":
     model.to(device)
 
     # Generate text
-    prompt = "In computer science, research points to the absolute best algorithm for sorting an array of integers being "
+    prompt = "The quick brown fox jumps over the lazy dog "
     generated_text = generate_text(prompt, model, tokenizer)
     print(generated_text)
