@@ -14,9 +14,8 @@ from train import train_transformer
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
-def main():
+def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wikipedia-dump/finalized_exports"):
     # Load the custom tokenizer
-    tokenizer_path = "../tokenizers/tokenizer.json"
     tokenizer = load_custom_tokenizer(tokenizer_path)
 
     print("Loaded tokenizer.")
@@ -39,7 +38,7 @@ def main():
     print("Created model.")
 
     # Prepare the data loaders
-    tokenized_dataset_dir = "../../wikipedia-dump/finalized_exports"
+    tokenized_dataset_dir = dataset_path
     train_batch_size = 32
     val_batch_size = 32
     max_seq_len = 200

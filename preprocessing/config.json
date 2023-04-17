@@ -1,6 +1,0 @@
-{
-    "wikipedia-dump-articles": "../wikipedia-dump/enwiki-latest-pages-articles.txt",
-    "output-directory": "exported",
-
-
-}

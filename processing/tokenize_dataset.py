@@ -1,6 +1,7 @@
 import os
 import pickle
 import torch
+import argparse
 from torch.utils.data import Dataset, DataLoader, random_split
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
@@ -71,16 +72,27 @@ def prepare_data_loaders(directory, tokenizer, train_batch_size=32, val_batch_si
 # Load a pre-trained tokenizer (replace "bert-base-uncased" with your tokenizer of choice)
 tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
+
+# Get the path to the text files directory and the tokenizer.json from the command line
+parser = argparse.ArgumentParser(
+    description="Create a tokenizer using Hugging Face's tokenizers library.")
+parser.add_argument(
+    "data_directory", help="Path to the directory containing pre-processed text files.")
+parser.add_argument(
+    "tokenizer_file", help="Path to the tokenizer.json file.")
+
+args = parser.parse_args()
+
 # Prepare data loaders
 
 # Load the trained tokenizer
 tokenizer = PreTrainedTokenizerFast(
-    tokenizer_file="tokenizers/tokenizer.json")
+    tokenizer_file=args.tokenizer_file)
 
 # Add the padding token to the tokenizer to make it compatible with the TextDataset class
 tokenizer.pad_token = "<pad>"
 
 # Prepare data loaders
-data_directory = "../wikipedia-dump/finalized_exports"
+data_directory = args.data_directory
 train_dataloader, val_dataloader = prepare_data_loaders(
     data_directory, tokenizer)

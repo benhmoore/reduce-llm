@@ -12,6 +12,26 @@
 5. Push your changes:
    `git push --set-upstream origin [branch-name]`
 
+## Installing the environment
+
+This project requires Python 3.9 and Conda to run. You can install Conda by following the instructions on https://docs.conda.io/en/latest/miniconda.html.
+
+To create a conda environment with all the necessary packages for this project, you can use the environment.yml file provided in this repository. Follow these steps:
+
+1. Open a terminal and navigate to the folder where environment.yml is stored.
+2. Run the command `conda env create --file environment.yml`. This will create a new environment called `reduce-llm` with the specified channels and dependencies.
+3. To activate the environment, run the command `conda activate reduce-llm`.
+4. To verify that the environment was created successfully, run the command `conda list` and check that the packages are installed.
+
+You are now ready to run the project code in the `reduce-llm` environment.
+
+## Steps for Training
+
+1. Split the Wikipedia dump file into smaller files using `chunk_file.py`.
+2. Preprocess the files using `preprocess.py`.
+3. Generate a tokenizer using `generate_tokenizer.py`.
+   4...
+
 ## Helpers
 
 - `chunk_file.py` splits the 16GB wikipedia dump file into smaller files.
