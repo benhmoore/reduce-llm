@@ -30,7 +30,7 @@ def reducer_process_directory(input_dir, output_dir, keywords, max_word_distance
 
         with open(file_path, "r") as input_file:
             text = input_file.read()
-            text = text.lower()
+            #text = text.lower()
             chunks = chunk_text(text, keywords, max_word_distance)
             for chunk in chunks:
                 chunk_size = len(chunk.encode("utf-8"))
