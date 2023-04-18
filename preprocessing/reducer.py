@@ -7,7 +7,7 @@ import json
 from utils import *
 
 
-def reducer_process_directory(input_dir, output_dir, keywords, max_word_distance=1000, max_file_size=104857600, min_chunk_size=5000):
+def reducer_process_directory(input_dir, output_dir, keywords, max_word_distance=5000, max_file_size=104857600, min_chunk_size=5000):
     os.makedirs(output_dir, exist_ok=True)
 
     file_list = glob.glob(os.path.join(input_dir, "*"))
