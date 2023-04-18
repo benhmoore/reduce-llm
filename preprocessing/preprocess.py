@@ -1,16 +1,11 @@
 from chunk_file import *
 from cutter import *
 from reducer import *
+import argparse
 from colorama import Fore, Back, Style
 
 
 def process_directory(input_dir, output_dir, keywords_file):
-
-    print(Back.GREEN, "Running cUTTER", Style.RESET_ALL)
-    print(" * * * * * * * ")
-    print("Attempting to remove links, titles and headings, non-standard characters, code, quotations, and gibberish.")
-    print(" * * * * * * * ")
-    cutter_process_directory(input_dir, "cutter_output")
 
     print(Back.GREEN, "Running rEDUCER", Style.RESET_ALL)
     print(" * * * * * * * ")
@@ -23,9 +18,15 @@ def process_directory(input_dir, output_dir, keywords_file):
         keywords = json.load(f)
         print(Fore.GREEN, "Loaded. Using keywords: ", keywords, Style.RESET_ALL)
 
-    reducer_process_directory("cutter_output", output_dir, keywords)
+    reducer_process_directory(input_dir, "reducer_output", keywords)
 
-    print(Back.GREEN, "Reduction complete", Style.RESET_ALL)
+    print(Back.GREEN, "Running cUTTER", Style.RESET_ALL)
+    print(" * * * * * * * ")
+    print("Attempting to remove links, titles and headings, non-standard characters, code, quotations, and gibberish.")
+    print(" * * * * * * * ")
+    cutter_process_directory("reducer_output", output_dir)
+
+    print(Back.GREEN, "Cut complete", Style.RESET_ALL)
 
     print("Check the output directory for the processed files.", output_dir)
 

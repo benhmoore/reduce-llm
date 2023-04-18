@@ -4,6 +4,7 @@
 from colorama import Fore, Back, Style
 import re
 import os
+import time
 import unicodedata
 
 
@@ -48,7 +49,7 @@ def should_remove_line(line):
         return True
 
     # Remove code samples
-    if re.match(r'^\s+', line) or re.search(r'[{}[\]<>]', line):
+    if re.search(r'[{}<>]', line):
         return True
 
     # Remove short or empty lines
@@ -82,14 +83,32 @@ def cutter_process_directory(input_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    for file_name in os.listdir(input_dir):
+    file_list = [f for f in os.listdir(
+        input_dir) if f.lower().endswith('.txt')]
+    total_files = len(file_list)
+    start_time = time.time()
+    time_elapsed_list = []
+
+    for i, file_name in enumerate(file_list, 1):
         input_file_path = os.path.join(input_dir, file_name)
         output_file_path = os.path.join(output_dir, file_name)
 
-        # Process only text files
-        if input_file_path.lower().endswith('.txt'):
-            process_text_file(input_file_path, output_file_path)
-            print(f"Processed {input_file_path} -> {output_file_path}")
+        file_start_time = time.time()
+        process_text_file(input_file_path, output_file_path)
+        file_end_time = time.time()
+
+        time_elapsed = file_end_time - file_start_time
+        time_elapsed_list.append(time_elapsed)
+
+        avg_time_per_file = sum(time_elapsed_list) / len(time_elapsed_list)
+        remaining_files = total_files - i
+        remaining_time = remaining_files * avg_time_per_file
+
+        print(f"Processed {input_file_path} -> {output_file_path} (file {i}/{total_files}) in {time_elapsed:.2f} seconds. Estimated time remaining: {remaining_time:.2f} seconds.")
+
+    total_time_elapsed = time.time() - start_time
+    print(
+        f"Processing complete. Total time: {total_time_elapsed:.2f} seconds.")
 
 
 if __name__ == "__main__":

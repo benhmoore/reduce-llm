@@ -1,12 +1,13 @@
 import os
 import glob
+import time
 import argparse
 import json
 
 from utils import *
 
 
-def reducer_process_directory(input_dir, output_dir, keywords, max_word_distance=1000, max_file_size=104857600, min_chunk_size=1000):
+def reducer_process_directory(input_dir, output_dir, keywords, max_word_distance=1000, max_file_size=104857600, min_chunk_size=5000):
     os.makedirs(output_dir, exist_ok=True)
 
     file_list = glob.glob(os.path.join(input_dir, "*"))
@@ -19,11 +20,17 @@ def reducer_process_directory(input_dir, output_dir, keywords, max_word_distance
     print(f"Processing {len(file_list)} files in '{input_dir}'...")
     print("Looking for the following keywords and sequences:", keywords)
 
+    start_time = time.time()
+    total_files = len(file_list)
+    time_elapsed_list = []
+
     for i, file_path in enumerate(file_list, 1):
-        print(f"Processing file {i}/{len(file_list)}: {file_path}")
+        file_start_time = time.time()
+        print(f"Processing file {i}/{total_files}: {file_path}")
 
         with open(file_path, "r") as input_file:
             text = input_file.read()
+            #text = text.lower()
             chunks = chunk_text(text, keywords, max_word_distance)
             for chunk in chunks:
                 chunk_size = len(chunk.encode("utf-8"))
@@ -40,6 +47,22 @@ def reducer_process_directory(input_dir, output_dir, keywords, max_word_distance
                 output_file.write(chunk)
                 output_file.write("\n\n")
                 output_file_size += chunk_size
+
+        file_end_time = time.time()
+        time_elapsed = file_end_time - file_start_time
+        time_elapsed_list.append(time_elapsed)
+
+        avg_time_per_file = sum(time_elapsed_list) / len(time_elapsed_list)
+        remaining_files = total_files - i
+        remaining_time = remaining_files * avg_time_per_file
+
+        print(
+            f"File {i} processed in {time_elapsed:.2f} seconds. Estimated time remaining: {remaining_time:.2f} seconds.")
+
+    output_file.close()
+    total_time_elapsed = time.time() - start_time
+    print(
+        f"Processing complete. Total time: {total_time_elapsed:.2f} seconds.")
 
     output_file.close()
     print("Processing complete.")
