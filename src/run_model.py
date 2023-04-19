@@ -25,6 +25,12 @@ def generate_text(prompt, model, tokenizer, max_length=50):
     return generated_text
 
 
+def interactive_shell(model, tokenizer):
+    while True:
+        prompt = input("Enter a prompt: ")
+        generated_text = generate_text(prompt, model, tokenizer)
+        print(generated_text)
+
 if __name__ == "__main__":
     # Load the custom tokenizer
     tokenizer_path = "../tokenizers/tokenizer.json"
@@ -44,7 +50,11 @@ if __name__ == "__main__":
     model = load_model(model_path, SimpleTransformer, device)
     model.to(device)
 
-    # Generate text
-    prompt = "The quick brown fox jumps over the lazy dog "
-    generated_text = generate_text(prompt, model, tokenizer)
-    print(generated_text)
+
+    # Launch interactive shell
+    interactive_shell(model, tokenizer)
+
+    # # Generate text
+    # prompt = "The quick brown fox jumps over the lazy dog "
+    # generated_text = generate_text(prompt, model, tokenizer)
+    # print(generated_text)
