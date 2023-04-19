@@ -1,5 +1,6 @@
 name: reduce-llm
 channels:
+  - anaconda
   - pytorch-nightly
   - huggingface
   - conda-forge
@@ -12,3 +13,6 @@ dependencies:
   - transformers
   - tokenizers
   - scikit-optimize
+  - nltk
+  - pyspellchecker
+  - libiconv

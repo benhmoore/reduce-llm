@@ -63,4 +63,4 @@ def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wiki
 
 
 if __name__ == "__main__":
-    main()
+    main(dataset_path="../../wikipedia-dump/preprocessed")
