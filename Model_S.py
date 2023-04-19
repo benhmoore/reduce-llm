@@ -1,19 +1,19 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-###########FIX LINE 22, CHECK LINES 7-16
+
 # hyperparameters
-batch_size = 16 # how many independent sequences will we process in parallel?
-block_size = 32 # what is the maximum context length for predictions?
+batch_size = 64 # how many independent sequences will we process in parallel?
+block_size = 256 # what is the maximum context length for predictions?
 max_iters = 5000
-eval_interval = 100
-learning_rate = 1e-3
+eval_interval = 500
+learning_rate = 3e-4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 eval_iters = 200
-n_embd = 64
-n_head = 4
-n_layer = 4
-dropout = 0.0
+n_embd = 384
+n_head = 6
+n_layer = 6
+dropout = 0.2
 # ------------
 
 torch.manual_seed(1337)
@@ -144,17 +144,6 @@ class LanguageModel(nn.Module):
         self.blocks = nn.Sequential(*[Block(n_embd, n_head=n_head) for _ in range(n_layer)])
         self.ln_f = nn.LayerNorm(n_embd) # final layer norm
         self.lm_head = nn.Linear(n_embd, vocab_size)
-
-        #Should init
-        self.apply(self._init_weights)
-
-    def _init_weights(m):
-        if isinstance(m, nn.Linear):
-            torch.nn.init.uniform_(m.weight, lower_bound=0.0, upper_bound=0.02)
-            m.bias.data.fill_(0.01)
-
-    net = nn.Sequential(nn.Linear(2, 2), nn.Linear(2, 2))
-    net.apply(_init_weights)
 
     def forward(self, idx, targets=None):
         B, T = idx.shape
