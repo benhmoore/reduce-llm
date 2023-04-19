@@ -3,9 +3,8 @@ import torch
 from gpt_model import SimpleTransformer
 from tokenizer import load_custom_tokenizer
 
+
 # Load the model's state dict from the .pt file
-
-
 def load_model(model_path, model_class, device):
     model = model_class(vocab_size, d_model, nhead, num_layers, dim_feedforward)
     model.load_state_dict(torch.load(model_path, map_location=device))
@@ -14,8 +13,6 @@ def load_model(model_path, model_class, device):
 
 
 # Generate text given a sequence of words
-
-
 def generate_text(prompt, model, tokenizer, max_length=50):
     model.eval()
     input_ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)
@@ -29,6 +26,7 @@ def interactive_shell(model, tokenizer):
         prompt = input("Enter a prompt: ")
         generated_text = generate_text(prompt, model, tokenizer)
         print(generated_text)
+
 
 if __name__ == "__main__":
     # Load the custom tokenizer
@@ -48,7 +46,6 @@ if __name__ == "__main__":
     # Load the model
     model = load_model(model_path, SimpleTransformer, device)
     model.to(device)
-
 
     # Launch interactive shell
     interactive_shell(model, tokenizer)
