@@ -39,7 +39,7 @@ if __name__ == "__main__":
     nhead = 4
     num_layers = 3
     dim_feedforward = 1024
-    model_path = "../trained_models/epoch_1_76989.pt"
+    model_path = "../trained_models/epoch_20_24889_4.631118524899752.pt"
 
     device = "mps" if torch.backends.mps.is_available() else "cpu"
 
