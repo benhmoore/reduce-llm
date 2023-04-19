@@ -11,7 +11,10 @@ from gpt_train import train_transformer
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
-def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wikipedia-dump/finalized_exports"):
+def main(
+    tokenizer_path="../tokenizers/tokenizer.json",
+    dataset_path="../../wikipedia-dump/finalized_exports",
+):
     tokenizer = load_custom_tokenizer(tokenizer_path)
 
     print("Loaded tokenizer.")
@@ -24,8 +27,8 @@ def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wiki
         "nhead": [4, 8, 16],
         "num_layers": [3, 6, 9],
         "dim_feedforward": [1024, 2048, 4096],
-        "dropout": [0.05, 0.1, 0.2],
-        "learning_rate": [0.001, 0.002, 0.005],
+        "dropout": [0.1, 0.2, 0.3],
+        "learning_rate": [0.0015, 0.002, 0.005],
     }
 
     # Find the best combination of hyperparameters
@@ -38,7 +41,12 @@ def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wiki
                     for dropout in params["dropout"]:
                         for learning_rate in params["learning_rate"]:
                             model = SimpleTransformer(
-                                vocab_size, d_model, nhead, num_layers, dim_feedforward, dropout
+                                vocab_size,
+                                d_model,
+                                nhead,
+                                num_layers,
+                                dim_feedforward,
+                                dropout,
                             )
 
                             tokenized_dataset_dir = dataset_path
@@ -46,21 +54,43 @@ def main(tokenizer_path="../tokenizers/tokenizer.json", dataset_path="../../wiki
                             val_batch_size = 32
                             max_seq_len = 200
                             train_dataloader, val_dataloader = prepare_data_loaders(
-                                tokenized_dataset_dir, tokenizer, train_batch_size, val_batch_size, max_seq_len
+                                tokenized_dataset_dir,
+                                tokenizer,
+                                train_batch_size,
+                                val_batch_size,
+                                max_seq_len,
                             )
 
-                            epochs = 6
+                            epochs = 20
                             criterion = nn.CrossEntropyLoss()
                             optimizer = optim.AdamW(
-                                model.parameters(), lr=learning_rate, weight_decay=1e-5)
-                            device = "mps" if torch.backends.mps.is_available() else "cpu"
+                                model.parameters(), lr=learning_rate, weight_decay=1e-5
+                            )
+                            device = (
+                                "mps" if torch.backends.mps.is_available() else "cpu"
+                            )
 
-                            print("Training model with d_model={}, nhead={}, num_layers={}, dim_feedforward={}, dropout={}, learning_rate={}".format(
-                                d_model, nhead, num_layers, dim_feedforward, dropout, learning_rate
-                            ))
+                            print(
+                                "Training model with d_model={}, nhead={}, num_layers={}, dim_feedforward={}, dropout={}, learning_rate={}".format(
+                                    d_model,
+                                    nhead,
+                                    num_layers,
+                                    dim_feedforward,
+                                    dropout,
+                                    learning_rate,
+                                )
+                            )
                             model.to(device)
-                            train_transformer(model, train_dataloader, val_dataloader, vocab_size,
-                                              epochs, criterion, optimizer, device)
+                            train_transformer(
+                                model,
+                                train_dataloader,
+                                val_dataloader,
+                                vocab_size,
+                                epochs,
+                                criterion,
+                                optimizer,
+                                device,
+                            )
 
                             val_loss = evaluate(model, val_dataloader, device)
                             if val_loss < best_val_loss:
@@ -95,4 +125,4 @@ def evaluate(model, dataloader, device):
 
 
 if __name__ == "__main__":
-    main()
+    main(dataset_path="../../wikipedia-dump/export")
