@@ -2,9 +2,20 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 import time
+import random
 
 
-def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epochs, criterion, optimizer, device, patience=5):
+def train_transformer(
+    model,
+    train_dataloader,
+    val_dataloader,
+    vocab_size,
+    epochs,
+    criterion,
+    optimizer,
+    device,
+    patience=5,
+):
     best_val_loss = float("inf")
     patience_counter = 0
 
@@ -18,8 +29,7 @@ def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epoch
         for input_sequences, target_sequences in train_dataloader:
             batch_count += 1
             if batch_count % 50 == 0:
-                print(
-                    f"Processing batch {batch_count} of {len(train_dataloader)}")
+                print(f"Processing batch {batch_count} of {len(train_dataloader)}")
                 start_time = time.time()
 
             input_sequences = input_sequences.to(device)
@@ -28,8 +38,7 @@ def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epoch
             optimizer.zero_grad()
             output = model(input_sequences)
 
-            loss = criterion(output.view(-1, vocab_size),
-                             target_sequences.view(-1))
+            loss = criterion(output.view(-1, vocab_size), target_sequences.view(-1))
             loss.backward()
             optimizer.step()
 
@@ -44,7 +53,8 @@ def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epoch
                 time_per_batch = end_time - start_time
                 print(f"Time per batch: {time_per_batch} seconds")
                 print(
-                    f"Estimated time to completion: {(len(train_dataloader) - batch_count) * time_per_batch / 3600:.4f} hours")
+                    f"Estimated time to completion: {(len(train_dataloader) - batch_count) * time_per_batch / 3600:.4f} hours"
+                )
 
         avg_loss = total_loss / len(train_dataloader)
         print(f"Epoch: {epoch+1}, Loss: {avg_loss:.4f}")
@@ -59,8 +69,7 @@ def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epoch
                 target_sequences = target_sequences.to(device)
 
                 output = model(input_sequences)
-                loss = criterion(output.view(-1, vocab_size),
-                                 target_sequences.view(-1))
+                loss = criterion(output.view(-1, vocab_size), target_sequences.view(-1))
                 total_loss += loss.item()
 
             avg_val_loss = total_loss / len(val_dataloader)
@@ -74,9 +83,13 @@ def train_transformer(model, train_dataloader, val_dataloader, vocab_size, epoch
 
         if patience_counter >= patience:
             print(
-                f"Early stopping triggered after {patience} epochs of no improvement.")
+                f"Early stopping triggered after {patience} epochs of no improvement."
+            )
             break
 
         # Save the model after each epoch to the ../trained_models directory
-        model_path = f"../trained_models/epoch_{epoch+1}.pt"
+        # Include random number in filename to avoid overwriting
+        rand_int = random.randint(0, 100000)
+
+        model_path = f"../trained_models/epoch_{epoch+1}_{rand_int}_{avg_loss}.pt"
         torch.save(model.state_dict(), model_path)
