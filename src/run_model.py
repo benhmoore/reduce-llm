@@ -3,16 +3,22 @@ import torch
 from gpt_model import SimpleTransformer
 from tokenizer import load_custom_tokenizer
 from colorama import Fore, Style
-import nltk
 
 import random
+
+import nltk
 from nltk.tokenize import word_tokenize
-from nltk import pos_tag
+from nltk import pos_tag, word_tokenize
+from nltk.corpus import wordnet as wn
+from nltk.sentiment import SentimentIntensityAnalyzer
+
 from colorama import Fore, Style
 
 nltk.download("punkt")
 nltk.download("words")
 nltk.download("averaged_perceptron_tagger")
+nltk.download("wordnet")
+nltk.download("vader_lexicon")
 
 from nltk.corpus import words
 
@@ -25,6 +31,10 @@ def count_misspelled_words(text):
     return len(misspelled_tokens)
 
 
+def is_misspelled(word, word_list):
+    return word.lower() not in word_list
+
+
 # Load the model's state dict from the .pt file
 def load_model(model_path, model_class, device):
     model = model_class(vocab_size, d_model, nhead, num_layers, dim_feedforward)
@@ -34,7 +44,7 @@ def load_model(model_path, model_class, device):
 
 
 # Generate text given a sequence of words
-def generate_text(input_ids, model, tokenizer, max_length=50):
+def generate_text(input_ids, model, tokenizer, max_length=30):
     generated = model.generate(input_ids, max_length=max_length, do_sample=True)
     generated_text = tokenizer.decode(generated[0], skip_special_tokens=True)
     return generated_text
@@ -44,7 +54,7 @@ def generate_ten_responses(prompt, model, tokenizer):
     model.eval()
     input_ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)
     responses = []
-    for _ in range(10):
+    for _ in range(40):
         generated_text = generate_text(input_ids, model, tokenizer)
         responses.append(generated_text)
     print("Generated responses:", "\n\n".join(responses), sep="\n")
@@ -52,13 +62,47 @@ def generate_ten_responses(prompt, model, tokenizer):
 
 
 def compute_score(response):
+    # Heavily penalize empty sentences or those containing only whitespace
+    if not response or response.isspace():
+        return -1000
+
     tokenized = word_tokenize(response)
     tagged = pos_tag(tokenized)
 
-    # You can customize the scoring method based on the POS tags or other criteria.
-    score = sum(1 for word, tag in tagged if tag.startswith("N") or tag.startswith("V"))
+    # Penalize short sentences (less than 5 words)
+    if len(tokenized) < 5:
+        return 0
 
-    return score
+    # Reward longer sentences
+    length_score = len(tokenized) / 10
+
+    # Reward proper use of nouns and verbs
+    pos_score = sum(
+        1 for word, tag in tagged if tag.startswith("N") or tag.startswith("V")
+    )
+
+    # Reward diverse vocabulary
+    unique_words = len(set(tokenized)) / len(tokenized)
+    vocab_score = unique_words * 10
+
+    # Reward semantically coherent sentences
+    synsets = [wn.synsets(token) for token in tokenized if wn.synsets(token)]
+    coherence_score = sum(len(synset) for synset in synsets) / len(synsets)
+
+    # # Penalize negative sentiment
+    # sia = SentimentIntensityAnalyzer()
+    # sentiment_score = sia.polarity_scores(response)["compound"]
+
+    # Penalize misspellings using nltk.corpus.words
+    word_list = set(words.words())
+    misspellings_penalty = sum(is_misspelled(word, word_list) for word in tokenized) * 2
+
+    # Compute the final score
+    final_score = (
+        length_score + pos_score + vocab_score + coherence_score - misspellings_penalty
+    )
+
+    return final_score
 
 
 def process_generation(generated_text):
