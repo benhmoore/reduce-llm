@@ -10,14 +10,15 @@ import tiktoken
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+import os
 
 
-torch.manual_seed(1337)
+#torch.manual_seed(1337)
 
 
 batch_size = 64 # how many independent sequences will we process in parallel?
 block_size = 256 # what is the maximum context length for predictions?
-max_iters = 5000
+max_iters = 1000
 eval_interval = 500
 learning_rate = 3e-4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -27,7 +28,7 @@ n_head = 6
 n_layer = 6
 dropout = 0.2
 
-with open('cs-articles-combined/cs-articles-combined.txt', 'r', encoding='utf-8') as f:
+with open('cs-article-main/cs-articles.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 
@@ -201,7 +202,16 @@ class BigramLanguageModel(nn.Module):
             idx = torch.cat((idx, idx_next), dim=1) # (B, T+1)
         return idx
 
-model = BigramLanguageModel()
+model_path = "test.pt"
+
+if os.path.exists(model_path):
+    model = BigramLanguageModel()
+    model.load_state_dict(torch.load(model_path, map_location=device))
+    model.train()
+else:
+    model = BigramLanguageModel()
+    
+
 m = model.to(device)
 print(sum(p.numel() for p in m.parameters())/1e6, 'M parameters')
 
@@ -227,5 +237,15 @@ for iter in range(max_iters):
 
 # generate from the model
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
+model_path = f"test.pt"
+torch.save(model.state_dict(), model_path)
+
+#test = "Data structures are critical to software development and computer science. Some of the most commonly used data structures include "
+#newContext = torch.tensor(encode(test), dtype=torch.long)
+
+
+
 print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
-open('more.txt', 'w').write(decode(m.generate(context, max_new_tokens=10000)[0].tolist()))
+#print(decode(m.generate(newContext, max_new_tokens=500)[0].tolist()))
+
+#open('more.txt', 'w').write(decode(m.generate(context, max_new_tokens=10000)[0].tolist()))
